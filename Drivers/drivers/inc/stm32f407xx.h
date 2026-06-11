@@ -109,7 +109,6 @@ typedef struct
 
 
 /* peripheral definitions ( Peripheral base addresses typecasted to xxx_RegDef_t) */
-
 #define GPIOA  				((GPIO_RegDef_t*)GPIOA_BASEADDR)
 #define GPIOB  				((GPIO_RegDef_t*)GPIOB_BASEADDR)
 #define GPIOC  				((GPIO_RegDef_t*)GPIOC_BASEADDR)
@@ -121,6 +120,23 @@ typedef struct
 #define GPIOI  				((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
 #define RCC 				((RCC_RegDef_t*)RCC_BASEADDR)
+#define EXTI				((EXTI_RegDef_t*)EXTI_BASEADDR)
+#define SYSCFG				((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
+
+#define SPI1  				((SPI_RegDef_t*)SPI1_BASEADDR)
+#define SPI2  				((SPI_RegDef_t*)SPI2_BASEADDR)
+#define SPI3  				((SPI_RegDef_t*)SPI3_BASEADDR)
+
+#define I2C1  				((I2C_RegDef_t*)I2C1_BASEADDR)
+#define I2C2  				((I2C_RegDef_t*)I2C2_BASEADDR)
+#define I2C3  				((I2C_RegDef_t*)I2C3_BASEADDR)
+
+#define USART1  			((USART_RegDef_t*)USART1_BASEADDR)
+#define USART2  			((USART_RegDef_t*)USART2_BASEADDR)
+#define USART3  			((USART_RegDef_t*)USART3_BASEADDR)
+#define UART4  				((USART_RegDef_t*)UART4_BASEADDR)
+#define UART5  				((USART_RegDef_t*)UART5_BASEADDR)
+#define USART6  			((USART_RegDef_t*)USART6_BASEADDR)
 
 /* Clock Enable Macros for GPIOx peripherals */
 #define GPIOA_PCLK_EN()    	(RCC->AHB1ENR |= (1 << 0))
