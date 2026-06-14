@@ -107,6 +107,30 @@ typedef struct
 
 } RCC_RegDef_t;
 
+/* peripheral register definition structure for EXTI */
+typedef struct
+{
+	__vo uint32_t IMR;
+	__vo uint32_t EMR;
+	__vo uint32_t RTSR;
+	__vo uint32_t FTSR;
+	__vo uint32_t SWIER;
+	__vo uint32_t PR;
+
+}EXTI_RegDef_t;
+
+/* peripheral register definition structure for SYSCFG */
+typedef struct
+{
+	__vo uint32_t MEMRMP;
+	__vo uint32_t PMC;
+	__vo uint32_t EXTICR[4];
+	uint32_t      RESERVED1[2];
+	__vo uint32_t CMPCR;
+	uint32_t      RESERVED2[2];
+	__vo uint32_t CFGR;
+} SYSCFG_RegDef_t;
+
 
 /* peripheral definitions ( Peripheral base addresses typecasted to xxx_RegDef_t) */
 #define GPIOA  				((GPIO_RegDef_t*)GPIOA_BASEADDR)
@@ -148,6 +172,9 @@ typedef struct
 #define FLAG_RESET         RESET
 #define FLAG_SET 			SET
 
+/* Clock Enable Macros for SYSCFG peripheral */
+#define SYSCFG_PCLK_EN() (RCC->APB2ENR |= (1 << 14))
+
 /* Clock Enable Macros for GPIOx peripherals */
 #define GPIOA_PCLK_EN()    	(RCC->AHB1ENR |= (1 << 0))
 #define GPIOB_PCLK_EN()		(RCC->AHB1ENR |= (1 << 1))
@@ -181,5 +208,18 @@ typedef struct
 #define GPIOH_REG_RESET()               do{ (RCC->AHB1RSTR |= (1 << 7)); (RCC->AHB1RSTR &= ~(1 << 7)); }while(0)
 #define GPIOI_REG_RESET()               do{ (RCC->AHB1RSTR |= (1 << 8)); (RCC->AHB1RSTR &= ~(1 << 8)); }while(0)
 
+/*
+ * returns port code for given GPIOx base address
+ * This macro returns a code( between 0 to 7) for a given GPIO base address(x)
+ */
+#define GPIO_BASEADDR_TO_CODE(x)      ( (x == GPIOA)?0:\
+										(x == GPIOB)?1:\
+										(x == GPIOC)?2:\
+										(x == GPIOD)?3:\
+								        (x == GPIOE)?4:\
+								        (x == GPIOF)?5:\
+								        (x == GPIOG)?6:\
+								        (x == GPIOH)?7: \
+								        (x == GPIOI)?8:0)
 
 #endif
