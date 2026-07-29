@@ -297,6 +297,12 @@ typedef struct
                                                  : (x == GPIOI)   ? 8 \
                                                                   : 0)
 
+/* clock Enable Macros for SPIx peripherals */
+#define SPI1_PCLK_EN() (RCC->APB2ENR |= (1 << 12))
+#define SPI2_PCLK_EN() (RCC->APB1ENR |= (1 << 14))
+#define SPI3_PCLK_EN() (RCC->APB1ENR |= (1 << 15))
+#define SPI4_PCLK_EN() (RCC->APB2ENR |= (1 << 13))
+
 /* IRQ(Interrupt Request) Numbers of STM32F407x MCU */
 
 #define IRQ_NO_EXTI0 6
