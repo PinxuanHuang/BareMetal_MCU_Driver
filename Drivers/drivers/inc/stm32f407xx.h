@@ -301,7 +301,11 @@ typedef struct
 #define SPI1_PCLK_EN() (RCC->APB2ENR |= (1 << 12))
 #define SPI2_PCLK_EN() (RCC->APB1ENR |= (1 << 14))
 #define SPI3_PCLK_EN() (RCC->APB1ENR |= (1 << 15))
-#define SPI4_PCLK_EN() (RCC->APB2ENR |= (1 << 13))
+
+/* clock Disable Macros for SPIx peripherals */
+#define SPI1_PCLK_DI() (RCC->APB2ENR |= (1 << 12))
+#define SPI2_PCLK_DI() (RCC->APB1ENR |= (1 << 14))
+#define SPI3_PCLK_DI() (RCC->APB1ENR |= (1 << 15))
 
 /* IRQ(Interrupt Request) Numbers of STM32F407x MCU */
 
@@ -328,5 +332,18 @@ typedef struct
 /* macros for all the possible priority levels */
 #define NVIC_IRQ_PRI0 0
 #define NVIC_IRQ_PRI15 15
+
+/* generic macro */
+#define ENABLE 1
+#define DISABLE 0
+#define SET ENABLE
+#define RESET DISABLE
+#define GPIO_PIN_SET SET
+#define GPIO_PIN_RESET RESET
+#define FLAG_RESET RESET
+#define FLAG_SET SET
+
+#include "stm32f407xx_gpio_driver.h"
+#include "stm32f407xx_spi_driver.h"
 
 #endif

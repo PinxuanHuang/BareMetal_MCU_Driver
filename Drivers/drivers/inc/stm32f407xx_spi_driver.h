@@ -27,6 +27,36 @@ typedef struct
     uint8_t RxState;    /* To store Rx state */
 } SPI_Handle_t;
 
+/* SPI application states */
+#define SPI_READY 0
+#define SPI_BUSY_IN_RX 1
+#define SPI_BUSY_IN_TX 2
+
+/* SPI device mode */
+#define SPI_DEVICE_MODE_MASTER 1
+#define SPI_DEVICE_MODE_SLAVE 0
+
+/* SPI BusConfig */
+#define SPI_BUS_CONFIG_FD 1
+#define SPI_BUS_CONFIG_HD 2
+#define SPI_BUS_CONFIG_SIMPLEX_RXONLY 3
+
+/* SPI_DFF */
+#define SPI_DFF_8BITS 0
+#define SPI_DFF_16BITS 1
+
+/* CPOL */
+#define SPI_CPOL_HIGH 1
+#define SPI_CPOL_LOW 0
+
+/* CPHA */
+#define SPI_CPHA_HIGH 1
+#define SPI_CPHA_LOW 0
+
+/* SPI_SSM */
+#define SPI_SSM_EN 1
+#define SPI_SSM_DI 0
+
 /* Peripheral Clock setup */
 void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
 
