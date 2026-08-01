@@ -32,6 +32,12 @@ typedef struct
 #define SPI_BUSY_IN_RX 1
 #define SPI_BUSY_IN_TX 2
 
+/* SPI Application events */
+#define SPI_EVENT_TX_COMPLETE 1
+#define SPI_EVENT_RX_COMPLETE 2
+#define SPI_EVENT_OVR_ERR 3
+#define SPI_EVENT_CRC_ERR 4
+
 /* SPI device mode */
 #define SPI_DEVICE_MODE_MASTER 1
 #define SPI_DEVICE_MODE_SLAVE 0
@@ -80,5 +86,14 @@ void SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Le
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
 void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 void SPI_IRQHandling(SPI_Handle_t *pHandle);
+
+/* Other Peripheral Control APIs */
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName);
+void SPI_ClearOVRFlag(SPI_RegDef_t *pSPIx);
+void SPI_CloseTransmisson(SPI_Handle_t *pSPIHandle);
+void SPI_CloseReception(SPI_Handle_t *pSPIHandle);
+
+/* Application callback */
+void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, uint8_t AppEv);
 
 #endif
