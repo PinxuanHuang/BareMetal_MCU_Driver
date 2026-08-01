@@ -159,3 +159,88 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
         }
     }
 }
+
+void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
+{
+
+    if (EnorDi == ENABLE)
+    {
+        if (IRQNumber <= 31)
+        {
+            /* program ISER0 register */
+            *NVIC_ISER0 |= (1 << IRQNumber);
+        }
+        else if (IRQNumber > 31 && IRQNumber < 64) // 32 to 63
+        {
+            /* program ISER1 register */
+            *NVIC_ISER1 |= (1 << (IRQNumber % 32));
+        }
+        else if (IRQNumber >= 64 && IRQNumber < 96)
+        {
+            /* program ISER2 register */
+            *NVIC_ISER3 |= (1 << (IRQNumber % 64));
+        }
+    }
+    else
+    {
+        if (IRQNumber <= 31)
+        {
+            /* ICER0 register */
+            *NVIC_ICER0 |= (1 << IRQNumber);
+        }
+        else if (IRQNumber > 31 && IRQNumber < 64)
+        {
+            /* ICER1 register */
+            *NVIC_ICER1 |= (1 << (IRQNumber % 32));
+        }
+        else if (IRQNumber >= 6 && IRQNumber < 96)
+        {
+            /* ICER2 register */
+            *NVIC_ICER3 |= (1 << (IRQNumber % 64));
+        }
+    }
+}
+
+void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+{
+    /* ipr register */
+    uint8_t iprx = IRQNumber / 4;
+    uint8_t iprx_section = IRQNumber % 4;
+
+    uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+
+    *(NVIC_PR_BASE_ADDR + iprx) |= (IRQPriority << shift_amount);
+}
+
+void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len)
+{
+    uint8_t state = pSPIHandle->TxState;
+
+    if (state != SPI_BUSY_IN_TX)
+    {
+        /* Save the Tx buffer address and Len information in some global variables */
+        pSPIHandle->pTxBuffer = pTxBuffer;
+        pSPIHandle->TxLen = Len;
+        /* Mark SPI state as in transmission so that no other code can take over same SPI peripheral until transmission is over */
+        pSPIHandle->TxState = SPI_BUSY_IN_TX;
+        /* Enable TXEIE control bit to get interrupt whenever TXE flag is set in SR */
+        pSPIHandle->pSPIx->CR2 |= (1 << SPI_CR2_TXEIE);
+    }
+    return state;
+}
+void SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len)
+{
+    uint8_t state = pSPIHandle->RxState;
+
+    if (state != SPI_BUSY_IN_RX)
+    {
+        /* Save the Rx buffer address and Len information in some global variables */
+        pSPIHandle->pRxBuffer = pRxBuffer;
+        pSPIHandle->RxLen = Len;
+        /* Mark SPI state as in reception so that no other code can take over same SPI peripheral until reception is over */
+        pSPIHandle->RxState = SPI_BUSY_IN_RX;
+        /* Enable RxEIE control bit to get interrupt whenever RxE flag is set in SR */
+        pSPIHandle->pSPIx->CR2 |= (1 << SPI_CR2_RXNEIE);
+    }
+    return state;
+}
