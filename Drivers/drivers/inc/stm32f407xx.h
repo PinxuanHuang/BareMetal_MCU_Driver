@@ -150,6 +150,31 @@ typedef struct
   __vo uint32_t I2SPR;   /*	Address offset: 0x20 */
 } SPI_RegDef_t;
 
+typedef struct
+{
+  __vo uint32_t CR1;
+  __vo uint32_t CR2;
+  __vo uint32_t OAR1;
+  __vo uint32_t OAR2;
+  __vo uint32_t DR;
+  __vo uint32_t SR1;
+  __vo uint32_t SR2;
+  __vo uint32_t CCR;
+  __vo uint32_t TRISE;
+  __vo uint32_t FLTR;
+} I2C_RegDef_t;
+
+typedef struct
+{
+  __vo uint32_t SR;
+  __vo uint32_t DR;
+  __vo uint32_t BRR;
+  __vo uint32_t CR1;
+  __vo uint32_t CR2;
+  __vo uint32_t CR3;
+  __vo uint32_t GTPR;
+} USART_RegDef_t;
+
 /* peripheral register definition structure for SYSCFG */
 typedef struct
 {
@@ -303,9 +328,19 @@ typedef struct
 #define SPI3_PCLK_EN() (RCC->APB1ENR |= (1 << 15))
 
 /* clock Disable Macros for SPIx peripherals */
-#define SPI1_PCLK_DI() (RCC->APB2ENR |= (1 << 12))
-#define SPI2_PCLK_DI() (RCC->APB1ENR |= (1 << 14))
-#define SPI3_PCLK_DI() (RCC->APB1ENR |= (1 << 15))
+#define SPI1_PCLK_DI() (RCC->APB2ENR &= ~(1 << 12))
+#define SPI2_PCLK_DI() (RCC->APB1ENR &= ~(1 << 14))
+#define SPI3_PCLK_DI() (RCC->APB1ENR &= ~(1 << 15))
+
+/* clock Enable Macros for I2Cx peripherals */
+#define I2C1_PCLK_EN() (RCC->APB1ENR |= (1 << 21))
+#define I2C2_PCLK_EN() (RCC->APB1ENR |= (1 << 22))
+#define I2C3_PCLK_EN() (RCC->APB1ENR |= (1 << 23))
+
+/* clock Disable Macros for I2Cx peripherals */
+#define I2C1_PCLK_DI() (RCC->APB1ENR &= ~(1 << 21))
+#define I2C2_PCLK_DI() (RCC->APB1ENR &= ~(1 << 22))
+#define I2C3_PCLK_DI() (RCC->APB1ENR &= ~(1 << 23))
 
 /* IRQ(Interrupt Request) Numbers of STM32F407x MCU */
 
@@ -380,6 +415,7 @@ typedef struct
 #define SPI_SR_BSY 7
 #define SPI_SR_FRE 8
 
+/* SPI peripheral reset */
 #define SPI1_REG_RESET()           \
   do                               \
   {                                \
@@ -399,7 +435,74 @@ typedef struct
     (RCC->APB1RSTR &= ~(1 << 15)); \
   } while (0)
 
+/* Bit position definitions I2C_CR1 */
+#define I2C_CR1_PE 0
+#define I2C_CR1_NOSTRETCH 7
+#define I2C_CR1_START 8
+#define I2C_CR1_STOP 9
+#define I2C_CR1_ACK 10
+#define I2C_CR1_SWRST 15
+
+/* Bit position definitions I2C_CR2 */
+#define I2C_CR2_FREQ 0
+#define I2C_CR2_ITERREN 8
+#define I2C_CR2_ITEVTEN 9
+#define I2C_CR2_ITBUFEN 10
+
+/* Bit position definitions I2C_OAR1 */
+#define I2C_OAR1_ADD0 0
+#define I2C_OAR1_ADD71 1
+#define I2C_OAR1_ADD98 8
+#define I2C_OAR1_ADDMODE 15
+
+/* Bit position definitions I2C_SR1 */
+#define I2C_SR1_SB 0
+#define I2C_SR1_ADDR 1
+#define I2C_SR1_BTF 2
+#define I2C_SR1_ADD10 3
+#define I2C_SR1_STOPF 4
+#define I2C_SR1_RXNE 6
+#define I2C_SR1_TXE 7
+#define I2C_SR1_BERR 8
+#define I2C_SR1_ARLO 9
+#define I2C_SR1_AF 10
+#define I2C_SR1_OVR 11
+#define I2C_SR1_TIMEOUT 14
+
+/* Bit position definitions I2C_SR2 */
+#define I2C_SR2_MSL 0
+#define I2C_SR2_BUSY 1
+#define I2C_SR2_TRA 2
+#define I2C_SR2_GENCALL 4
+#define I2C_SR2_DUALF 7
+
+/* Bit position definitions I2C_CCR */
+#define I2C_CCR_CCR 0
+#define I2C_CCR_DUTY 14
+#define I2C_CCR_FS 15
+
+/* I2C peripheral reset */
+#define I2C1_REG_RESET()           \
+  do                               \
+  {                                \
+    (RCC->APB1RSTR |= (1 << 21));  \
+    (RCC->APB1RSTR &= ~(1 << 21)); \
+  } while (0)
+#define I2C2_REG_RESET()           \
+  do                               \
+  {                                \
+    (RCC->APB1RSTR |= (1 << 22));  \
+    (RCC->APB1RSTR &= ~(1 << 22)); \
+  } while (0)
+#define I2C3_REG_RESET()           \
+  do                               \
+  {                                \
+    (RCC->APB1RSTR |= (1 << 23));  \
+    (RCC->APB1RSTR &= ~(1 << 23)); \
+  } while (0)
+
 #include "stm32f407xx_gpio_driver.h"
 #include "stm32f407xx_spi_driver.h"
+#include "stm32f407xx_i2c_driver.h"
 
 #endif
