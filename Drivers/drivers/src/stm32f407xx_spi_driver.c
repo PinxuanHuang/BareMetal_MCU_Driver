@@ -197,7 +197,7 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
             /* ICER1 register */
             *NVIC_ICER1 |= (1 << (IRQNumber % 32));
         }
-        else if (IRQNumber >= 6 && IRQNumber < 96)
+        else if (IRQNumber >= 64 && IRQNumber < 96)
         {
             /* ICER2 register */
             *NVIC_ICER3 |= (1 << (IRQNumber % 64));
