@@ -639,6 +639,7 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
         /* check device mode */
         if (pI2CHandle->pI2Cx->SR2 & (1 << I2C_SR2_MSL))
         {
+            /* master mode */
             if (pI2CHandle->TxRxState == I2C_BUSY_IN_TX)
             {
                 if (pI2CHandle->TxLen > 0)
@@ -652,6 +653,14 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
                     /* Increment buffer address */
                     pI2CHandle->pTxBuffer++;
                 }
+            }
+        }
+        else
+        {
+            /* slave mode*/
+            if (pI2CHandle->pI2Cx->SR2 & (1 << I2C_SR2_TRA))
+            {
+                I2C_ApplicationEventCallback(pI2CHandle, I2C_EV_DATA_REQ);
             }
         }
     }
@@ -692,6 +701,14 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
 
                     I2C_ApplicationEventCallback(pI2CHandle, I2C_EV_RX_CMPLT);
                 }
+            }
+        }
+        else
+        {
+            /* slave mode*/
+            if (!(pI2CHandle->pI2Cx->SR2 & (1 << I2C_SR2_TRA)))
+            {
+                I2C_ApplicationEventCallback(pI2CHandle, I2C_EV_DATA_RCV);
             }
         }
     }
