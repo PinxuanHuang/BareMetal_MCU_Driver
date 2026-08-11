@@ -348,6 +348,45 @@ void USART_ClearFlag(USART_RegDef_t *pUSARTx, uint16_t StatusFlagName)
     pUSARTx->SR &= ~(StatusFlagName);
 }
 
+uint8_t USART_SendDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t Len)
+{
+    uint8_t txstate = pUSARTHandle->TxBusyState;
+
+    if (txstate != USART_BUSY_IN_TX)
+    {
+        pUSARTHandle->TxLen = Len;
+        pUSARTHandle->pTxBuffer = pTxBuffer;
+        pUSARTHandle->TxBusyState = USART_BUSY_IN_TX;
+
+        // Implement the code to enable interrupt for TXE
+        pUSARTHandle->pUSARTx->CR1 |= (1 << USART_CR1_TXEIE);
+
+        // Implement the code to enable interrupt for TC
+        pUSARTHandle->pUSARTx->CR1 |= (1 << USART_CR1_TCIE);
+    }
+
+    return txstate;
+}
+
+uint8_t USART_ReceiveDataIT(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t Len)
+{
+    uint8_t rxstate = pUSARTHandle->RxBusyState;
+
+    if (rxstate != USART_BUSY_IN_RX)
+    {
+        pUSARTHandle->RxLen = Len;
+        pUSARTHandle->pRxBuffer = pRxBuffer;
+        pUSARTHandle->RxBusyState = USART_BUSY_IN_RX;
+
+        (void)pUSARTHandle->pUSARTx->DR;
+
+        // Implement the code to enable interrupt for RXNE
+        pUSARTHandle->pUSARTx->CR1 |= (1 << USART_CR1_RXNEIE);
+    }
+
+    return rxstate;
+}
+
 void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 {
 
